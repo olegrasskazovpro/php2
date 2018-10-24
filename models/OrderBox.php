@@ -9,7 +9,7 @@
 namespace app\models;
 
 
-class OrderBox extends Model
+class OrderBox extends DataModel
 {
 	public $order_id;
 	public $product;

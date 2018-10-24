@@ -8,15 +8,15 @@
 
 namespace app\models;
 
-class Product extends Model
+class Product extends DataModel
 {
 	public $id;
-	public $name;
-	public $description;
+	public $title;
+	public $desc;
 	public $price;
 	public $producerId;
 
-	public function getTableName()
+	public static function getTableName()
 	{
 		return 'catalog';
 	}

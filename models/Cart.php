@@ -9,13 +9,13 @@
 namespace app\models;
 
 
-abstract class Cart extends Model
+abstract class Cart extends DataModel
 {
 	public $user_id;
 	public $product_id;
 	public $quantity;
 
-	public function getTableName()
+	public static function getTableName()
 	{
 		return 'cart';
 	}

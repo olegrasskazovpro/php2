@@ -109,10 +109,10 @@ abstract class DataModel implements IModel
 
 	public function save()
 	{
-		if ($this->getOne($this->id)){
-			$this->update();
-		} else {
+		if (is_null($this->id)){
 			$this->insert();
+		} else {
+			$this->update();
 		}
 		$this->saveObject(); // обновляем savedObject
 	}

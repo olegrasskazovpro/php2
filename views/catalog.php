@@ -1,9 +1,9 @@
-<?php /** @var \app\models\Product $catalog */?>
+<?php /** @var \app\models\Product $model */?>
 
 <h1>Catalog</h1>
 
 <div class="catalog-div">
-	<?php foreach ($catalog as $val): ?>
+	<?php foreach ($model as $val): ?>
 		<div class="card">
 			<a href="./?c=product&a=card&id=<?= $val->id ?>" class="single">
 				<h2><?= $val->title ?></h2>

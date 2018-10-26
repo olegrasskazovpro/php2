@@ -9,7 +9,7 @@
 namespace app\models;
 
 
-class Orders extends DataModel
+class Orders extends DataEntity
 {
 	public $id;
 	public $user_id;

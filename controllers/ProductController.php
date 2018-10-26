@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\Product;
+use app\models\repositories\ProductRepository;
 
 class ProductController extends Controller
 {
@@ -16,14 +17,15 @@ class ProductController extends Controller
 	public function actionCard()
 	{
 		$id = $_GET['id'];
-		$model = Product::getOne($id);
+
+		$model = (new ProductRepository())->getOne($id);
 		echo $this->render('card', ['model' => $model]);
 	}
 
 
 	public function actionCatalog()
 	{
-		$model = Product::getAll();
+		$model = (new ProductRepository())->getAll();
 		echo $this->render('catalog', ['model' => $model]);
 	}
 }

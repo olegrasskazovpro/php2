@@ -2,7 +2,7 @@
 
 namespace app\models;
 
-class User extends DataModel
+class User extends DataEntity
 {
 	public $id;
 	public $login;
@@ -11,5 +11,10 @@ class User extends DataModel
 	public static function getTableName()
 	{
 		return 'users';
+	}
+
+	public function getUserByRole()
+	{
+
 	}
 }

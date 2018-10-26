@@ -9,7 +9,7 @@
 namespace app\models;
 
 
-abstract class Cart extends DataModel
+abstract class Cart extends DataEntity
 {
 	public $user_id;
 	public $product_id;

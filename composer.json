@@ -1,0 +1,17 @@
+{
+    "name": "olegrasskazov/php2",
+    "authors": [
+        {
+            "name": "OlegRasskazov",
+            "email": "info@olegrasskazov.pro"
+        }
+    ],
+    "require": {
+        "twig/twig": "1.*"
+    },
+  "autoload": {
+    "psr-4": {
+      "app\\": "./"
+    }
+  }
+}

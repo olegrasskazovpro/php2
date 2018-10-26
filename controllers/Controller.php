@@ -2,12 +2,21 @@
 namespace app\controllers;
 
 
+use app\services\renderers\IRenderer;
+
 abstract class Controller
 {
-	private $action;
-	private $defaultAction = 'index';
-	private $layout = 'main';
-	private $useLayout = true;
+	protected $action;
+	protected $defaultAction = 'index';
+	protected $layout = 'main';
+	protected $useLayout = true;
+
+	protected $renderer = null;
+
+	public function __construct(IRenderer $renderer)
+	{
+		$this->renderer = $renderer;
+	}
 
 	public function run($action = null)
 	{
@@ -33,9 +42,6 @@ abstract class Controller
 
 	public function renderTemplate($template, $params = [])
 	{
-		ob_start();
-		extract($params);
-		include TEMPLATES_DIR . $template . ".php";
-		return ob_get_clean();
+		return $this->renderer->render($template, $params);
 	}
 }

@@ -17,4 +17,11 @@ class ProductRepository extends Repository
 		return 'catalog';
 	}
 
+	public function getProductsByIds(array $ids)
+	{
+		$idStrign = implode(", ", $ids);
+		$sql = "SELECT * FROM catalog WHERE id IN ({$idStrign})";
+		return $this->find($sql);
+	}
+
 }

@@ -1,46 +1,61 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: olegrasskazov
- * Date: 13.10.2018
- * Time: 18:30
- */
 
 namespace app\models;
 
+use app\services\Session;
+use app\services\Redirect;
+use app\models\repositories\ProductRepository;
 
-abstract class Cart extends DataEntity
+class Cart extends DataEntity
 {
 	public $user_id;
 	public $product_id;
 	public $quantity;
+	private $session;
 
-	public static function getTableName()
+	public function __construct()
 	{
-		return 'cart';
+		$this->session = Session::getInstance();
+	}
+
+	public function getCart()
+	{
+		$cart = $this->session->get('cart');
+		if (!empty($cart)) {
+			$productsIds = array_keys($cart);
+			$products = (new ProductRepository())->getProductsByIds($productsIds);
+			foreach ($products as $product) {
+				$data[] = [
+					'product' => $product,
+					'count' => $cart[$product->id]
+				];
+			}
+			$this->session->set('cart', $data);
+		}
+		return $data;
 	}
 
 	public function deleteFromCart($id)
 	{
-		unset($_SESSION['cart'][$id]);
+//		unset($this->session->deleteOne('cart', $id));
 	}
 
 	public function cleanCart()
 	{
-		unset($_SESSION['cart']);
-		redirect('cart.php');
+		$this->session->deleteAll('cart');
+		new Redirect('cart.php');
 	}
 
-	public function getCartProducts(array $cart) : array {
-		return [];
-	}
-
-	public function addToCart($id, $qty)
+	public function add($productId, $qty)
 	{
-		if (!isset($_SESSION['cart'][$id])) {
-			$_SESSION['cart'][$id] = $qty;
+		$cart = $this->session->get('cart');
+
+		if (isset($cart[$productId])) {
+			$cart[$productId] += (int)$qty;
 		} else {
-			$_SESSION['cart'][$id] += $qty;
+			$cart[$productId] = (int)$qty;
 		}
+
+		$this->session->set('cart', $cart);
 	}
 }

@@ -1,12 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: olegrasskazov
- * Date: 13.10.2018
- * Time: 17:39
- */
 
-namespace app\interfaces;
+namespace app\services;
 
 
 interface IDb

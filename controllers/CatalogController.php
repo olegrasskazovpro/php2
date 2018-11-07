@@ -2,10 +2,10 @@
 
 namespace app\controllers;
 
-use app\models\Product;
+use app\base\App;
 use app\models\repositories\ProductRepository;
 
-class ProductController extends Controller
+class CatalogController extends Controller
 {
 
 	public function actionIndex()
@@ -16,10 +16,15 @@ class ProductController extends Controller
 
 	public function actionCard()
 	{
-		$id = $_GET['id'];
+		$id = App::call()->request->get('id');
 
 		$model = (new ProductRepository())->getOne($id);
-		echo $this->render('card', ['model' => $model]);
+
+		if($model){
+			echo $this->render('card', ['model' => $model]);
+		} else {
+			echo $this->render('cardnotfound', []);
+		}
 	}
 
 

@@ -1,7 +1,8 @@
 <?php
 
 namespace app\models\repositories;
-use app\services\Db;
+
+use app\base\App;
 use app\models\DataEntity;
 
 abstract class Repository implements IRepository
@@ -12,41 +13,54 @@ abstract class Repository implements IRepository
 
 	public function __construct()
 	{
-		$this->db = static::getDv();
+		$this->db = static::getDb();
 		$this->tableName = $this->getTableName();
 	}
 
-	public function saveObject(DataEntity $entity)
+	public function saveObject($entity)
 	{
-		$columns = $this->getColumns();
+		if ($entity instanceof DataEntity) {
+			$columns = $this->getColumns();
 
-		$objectProps = [];
+			$objectProps = [];
 
-		foreach ($entity as $key => $value) {
-			foreach ($columns as $key2 => $value2) {
-				if ($key == $value2) {
-					$objectProps["{$key}"] = $value;
+			foreach ($entity as $key => $value) {
+				foreach ($columns as $key2 => $value2) {
+					if ($key == $value2) {
+						$objectProps["{$key}"] = $value;
+					}
 				}
 			}
-		}
 
-		$this->savedObject = $objectProps;
+			$this->savedObject = $objectProps;
+		} else {
+			throw new \Exception();
+		}
+	}
+
+	public function find($sql)
+	{
+		return static::getDb()->queryAll($sql);
 	}
 
 	public function getOne($id)
 	{
 		$table = $this->tableName;
 		$sql = "SELECT * FROM {$table} WHERE id = :id";
-		$obj = static::getDv()->queryObj($sql, [':id' => $id], $this->getEntityClass());
-		$this->saveObject($obj);
-		return $obj;
+		$obj = static::getDb()->queryObj($sql, [':id' => $id], $this->getEntityClass())[0];
+		try {
+			$this->saveObject($obj);
+		} catch (\Exception $e) {
+		} finally{
+			return $obj;
+		}
 	}
 
 	public function getAll()
 	{
 		$table = $this->tableName;
 		$sql = "SELECT * FROM {$table}";
-		return static::getDv()->queryObjAll($sql, $this->getEntityClass());
+		return static::getDb()->queryObj($sql, [], $this->getEntityClass());
 	}
 
 	public function delete(DataEntity $entity)
@@ -102,7 +116,7 @@ abstract class Repository implements IRepository
 
 	public function save(DataEntity $entity)
 	{
-		if (is_null($entity->id)){
+		if (is_null($entity->id)) {
 			$this->insert($entity);
 		} else {
 			$this->update($entity);
@@ -116,9 +130,9 @@ abstract class Repository implements IRepository
 		return $this->db->getColumns($sql);
 	}
 
-	private static function getDv()
+	private static function getDb()
 	{
-		return Db::getInstance();
+		return App::call()->db;
 	}
 
 	abstract public function getTableName();

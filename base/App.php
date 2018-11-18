@@ -10,6 +10,11 @@ use app\traits\TSingleton;
  * @property $db
  * @property $request
  * @property $session
+ * @property $cart
+ * @property $redirect
+ * @property $auth
+ * @property $orders
+ * @property $files
  */
 class App
 {

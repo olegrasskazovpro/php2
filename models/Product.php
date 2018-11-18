@@ -9,5 +9,5 @@ class Product extends DataEntity
 	public $desc;
 	public $price;
 	public $producerId;
-
+	public $img;
 }

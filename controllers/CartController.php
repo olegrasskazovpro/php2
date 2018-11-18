@@ -1,31 +1,48 @@
 <?php
 namespace app\controllers;
 
-use app\models\Cart;
-use app\services\Request;
-use app\services\Session;
+use app\base\App;
 
 class CartController extends Controller
 {
+	protected $defaultAction = 'cart';
 
-	public function actionIndex()
+	public function actionCart()
 	{
-		$data = (new Cart())->getCart();
-		echo $this->render('cart', ['cart' => $data]);
+		$cart = App::call()->cart->getCart();
+		if($cart){
+			echo $this->render('cart', ['cart' => $cart]);
+		} else {
+			echo $this->render('emptycart', []);
+		}
 	}
 
 	public function actionAdd()
 	{
-		$request = new Request();
-		$productId = $request->post('id');
-		$productQty = $request->post('qty') ?: 0;
-		(new Cart())->add($productId, $productQty);
-		echo json_encode(['success' => 'ok', 'message' => 'Товар был добавлен в корзину']);
+		$productId = App::call()->request->post('id');
+		$qty = App::call()->request->post('qty') ?: 1;
+		try {
+			App::call()->cart->add($productId, $qty);
+		} catch (\Exception $e) {
+			App::call()->redirect->redirect('catalog');
+		}
+
+		$referer = App::call()->request->getReferer();
+		App::call()->redirect->redirect($referer);
+//		echo json_encode(['success' => 'ok', 'message' => 'Product was added to card']);
+
 	}
 
-	public function actionShow()
+	public function actionDelete()
 	{
-		$cart = ['id' => 1, 'title' => 'Адидас', 'desc' => 'asdfasdfasdfasfasfqfeqwef', 'price' => '30.00'];
-		echo $this->render('cart', ['cart' => $cart]);
+		$productId = App::call()->request->post('id');
+		App::call()->cart->deleteFromCart($productId);
+		App::call()->redirect->redirect('../cart');
+//		echo json_encode(['success' => 'ok', 'message' => 'Товар был удален из корзины']);
+	}
+
+	public function actionClean(){
+		App::call()->cart->cleanCart();
+		App::call()->redirect->redirect('cart');
 	}
 }

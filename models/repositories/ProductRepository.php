@@ -21,7 +21,7 @@ class ProductRepository extends Repository
 	{
 		$idStrign = implode(", ", $ids);
 		$sql = "SELECT * FROM catalog WHERE id IN ({$idStrign})";
-		return $this->find($sql);
+		return $this->find($sql, []);
 	}
 
 }

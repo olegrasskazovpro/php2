@@ -33,6 +33,11 @@ class Request
 		}
 	}
 
+	public function getReferer()
+	{
+		return $_SERVER['HTTP_REFERER'];
+	}
+
 	public function getControllerName()
 	{
 		return $this->controllerName;

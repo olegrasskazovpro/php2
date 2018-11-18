@@ -2,58 +2,61 @@
 
 namespace app\models;
 
-use app\services\Session;
-use app\services\Redirect;
+use app\base\App;
 use app\models\repositories\ProductRepository;
 
-class Cart extends DataEntity
+class Cart
 {
-	public $user_id;
-	public $product_id;
-	public $quantity;
 	private $session;
 
 	public function __construct()
 	{
-		$this->session = Session::getInstance();
+		$this->session = App::call()->session;
 	}
 
 	public function getCart()
 	{
 		$cart = $this->session->get('cart');
-		if (!empty($cart)) {
-			$productsIds = array_keys($cart);
-			$products = (new ProductRepository())->getProductsByIds($productsIds);
-			foreach ($products as $product) {
-				$data[] = [
-					'product' => $product,
-					'count' => $cart[$product->id]
-				];
+		$products = $cart['products'];
+
+		if (is_array($products)) {
+			$cart['total'] = 0;
+			foreach ($products as $key => $value) {
+				$product = $products[$key];
+				$product['product'] = (new ProductRepository())->getOne($key);
+				$subtotal = (float)$product['product']->price * $product['count'];
+				$product['subtotal'] = $subtotal;
+
+				$products[$key] = $product;
+				$cart['total'] += $subtotal;
 			}
-			$this->session->set('cart', $data);
+
+			$cart['products'] = $products;
+			$this->session->set('cart', $cart);
 		}
-		return $data;
+		var_dump($_SESSION);
+
+		return $cart;
 	}
 
 	public function deleteFromCart($id)
 	{
-//		unset($this->session->deleteOne('cart', $id));
+		$this->session->deleteOne("cart.products.{$id}");
 	}
 
 	public function cleanCart()
 	{
-		$this->session->deleteAll('cart');
-		new Redirect('cart.php');
+		$this->session->set('cart', null);
 	}
 
 	public function add($productId, $qty)
 	{
 		$cart = $this->session->get('cart');
 
-		if (isset($cart[$productId])) {
-			$cart[$productId] += (int)$qty;
+		if (isset($cart['products'][$productId])) {
+			$cart['products'][$productId]['count'] += (int)$qty;
 		} else {
-			$cart[$productId] = (int)$qty;
+			$cart['products'][$productId]['count'] = (int)$qty;
 		}
 
 		$this->session->set('cart', $cart);

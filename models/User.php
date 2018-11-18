@@ -6,15 +6,6 @@ class User extends DataEntity
 {
 	public $id;
 	public $login;
+	public $name;
 	public $password;
-
-	public static function getTableName()
-	{
-		return 'users';
-	}
-
-	public function getUserByRole()
-	{
-
-	}
 }

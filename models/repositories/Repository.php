@@ -17,30 +17,9 @@ abstract class Repository implements IRepository
 		$this->tableName = $this->getTableName();
 	}
 
-	public function saveObject($entity)
+	public function find($sql, $params = [])
 	{
-		if ($entity instanceof DataEntity) {
-			$columns = $this->getColumns();
-
-			$objectProps = [];
-
-			foreach ($entity as $key => $value) {
-				foreach ($columns as $key2 => $value2) {
-					if ($key == $value2) {
-						$objectProps["{$key}"] = $value;
-					}
-				}
-			}
-
-			$this->savedObject = $objectProps;
-		} else {
-			throw new \Exception();
-		}
-	}
-
-	public function find($sql)
-	{
-		return static::getDb()->queryAll($sql);
+		return static::getDb()->queryAll($sql, $params);
 	}
 
 	public function getOne($id)
@@ -51,6 +30,7 @@ abstract class Repository implements IRepository
 		try {
 			$this->saveObject($obj);
 		} catch (\Exception $e) {
+			echo "Не удалось получить объект из БД";
 		} finally{
 			return $obj;
 		}
@@ -95,12 +75,12 @@ abstract class Repository implements IRepository
 	public function update(DataEntity $entity)
 	{
 		$columns = [];
-		$params = [':id' => "$this->id"];
+		$params = [':id' => "$entity->id"];
 
 		foreach ($entity as $key => $value) {
-			foreach ($entity->savedObject as $key2 => $value2) {
+			foreach ($this->savedObject as $key2 => $value2) {
 				if ($key == $key2) {
-					if ($entity->savedObject["$key"] !== $value) {
+					if ($value !== $value2) {
 						$columns[] = "{$key} = :{$key}";
 						$params[":{$key}"] = "{$value}";
 					}
@@ -122,6 +102,28 @@ abstract class Repository implements IRepository
 			$this->update($entity);
 		}
 		$this->saveObject($entity); // обновляем savedObject
+		return $entity;
+	}
+
+	private function saveObject($entity)
+	{
+		if ($entity instanceof DataEntity) {
+			$columns = $this->getColumns();
+
+			$objectProps = [];
+
+			foreach ($entity as $key => $value) {
+				foreach ($columns as $key2 => $value2) {
+					if ($key == $value2) {
+						$objectProps["{$key}"] = $value;
+					}
+				}
+			}
+
+			$this->savedObject = $objectProps;
+		} else {
+			throw new \Exception();
+		}
 	}
 
 	public function getColumns()

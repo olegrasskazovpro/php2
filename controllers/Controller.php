@@ -1,7 +1,5 @@
 <?php
 namespace app\controllers;
-
-
 use app\services\renderers\IRenderer;
 
 abstract class Controller

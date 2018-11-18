@@ -1,0 +1,111 @@
+body {
+    font-family: "Open Sans";
+}
+
+img {
+    height: 100%;
+}
+
+button {
+    cursor: pointer;
+    border: 1px solid grey;
+}
+
+a {
+    text-decoration-line: none;
+}
+
+h2, h3 {
+    font-family: "Open Sans";
+    color: #2f2f2f;
+}
+
+h3 {
+    color: rebeccapurple;
+}
+
+ul {
+    display: flex;
+}
+
+li {
+    padding: 10px;
+    list-style-type: none;
+}
+
+form {
+    width: 300px;
+    margin: 20px 0;
+}
+
+input {
+    display: block;
+    width: 100%;
+    padding: 5px;
+    border: 1px grey solid;
+    margin: 10px;
+}
+
+input[type="submit"] {
+    height: 40px;
+    background-color: green;
+    color: #fff;
+    cursor: pointer;
+    font-size: 18px;
+}
+td {
+    border: gray solid 1px;
+}
+
+.catalog-div {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.single {
+    display: block;
+}
+
+.img__single {
+    width: 300px;
+    height: 200px;
+}
+
+.card {
+    width: 200px;
+    margin: 15px;
+}
+
+.empty-cart {
+    margin: 20px;
+    font-size: 30px;
+}
+
+.cancel_order {
+    text-align: center;
+}
+
+.big__button {
+    font-size: 18px;
+    padding: 10px;
+    margin-right: 20px;
+}
+
+.order {
+    background-color: green;
+}
+
+.clean {
+    background-color: indianred;
+}
+
+.delete {
+    font-size: 12px;
+    padding: 5px;
+    background-color: dodgerblue;
+}
+
+.error {
+    color: red;
+    text-align: center;
+}
